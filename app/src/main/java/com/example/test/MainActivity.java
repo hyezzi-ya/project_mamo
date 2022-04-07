@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d( TAG, "onMapReady");
         this.naverMap = naverMap;
 
-        // 권한확인. 결과는 onRequestPermissionsResult 콜백 매서드 호출
+        // 권한확인
+        // onRequestPermissionsResult 콜백 매서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
         // 데이터베이스
@@ -95,18 +96,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-
+    // 정보창 함수 구현
     public void addInfoWindow(@NonNull List<Rest> restList) {
 
-        // infowindow
+        // infowindow 객체 생성
         infoWindow = new InfoWindow();
 
         for (int i = 0; i < restList.size(); i++) {
 
             String storeName = restList.get(i).storeName;     // 이름
-            String address = restList.get(i).address;         // 주소
-            String time = restList.get(i).time;               // 시간
+            String address = restList.get(i).address;         // 휴게소 방향, 주
+            String time = restList.get(i).time;               // 이시간
 
+            // ViewAdapter 지정
             infoWindow.setAdapter(new InfoWindow.DefaultViewAdapter(this) {
                 @NonNull
                 @Override
@@ -126,19 +128,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onClick(@NonNull Overlay overlay) {
-//        if (overlay instanceof Marker) {
-//            Toast.makeText(this.getApplicationContext(), "마커가 선택되었습니다", Toast.LENGTH_LONG).show();
-//            return true;
-//            Marker marker = (Marker) overlay;
-//            if (marker.getInfoWindow() == null) {
-//                // 현재 마커에 정보 창이 열려있지 않을 경우 엶
-//                infoWindow.open(marker);
-//            } else {
-//                // 이미 현재 마커에 정보 창이 열려있을 경우 닫음
-//                infoWindow.close();
-//            }
-//            return true;
-//        }
             Marker marker = (Marker) overlay;
             infoWindow.open(marker);
 
@@ -150,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         for (int i = 0; i < restList.size(); i++) {
 
             String storeName = restList.get(i).storeName;     // 이름
-            String address = restList.get(i).address;         // 주소
             double lat = restList.get(i).latitude;            // 위도
             double lon = restList.get(i).longitude;           // 경도
 
@@ -168,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
+
     public List<Rest> initLoadRestDatabase(){
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         databaseHelper.OpenDatabaseFile();
