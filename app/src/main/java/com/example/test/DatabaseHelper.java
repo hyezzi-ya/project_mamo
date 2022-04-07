@@ -112,26 +112,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String sql = "SELECT * FROM " + tableName;
 
             // 테이블 데이터를 읽기 위한 Cursor
-            Cursor cursor = mDatabase.rawQuery(sql, null);
+            Cursor mCursor = mDatabase.rawQuery(sql, null);
 
             // 테이블 끝까지 읽기
-            if (cursor != null){
+            if (mCursor != null){
 
                 // 다음 Row로 이동
-                while(cursor.moveToNext()){
+                while(mCursor.moveToNext()){
 
-                    // 해당 Row 저장 locationSource
+                    // 해당 Row 저장
                     Rest rest = new Rest();
 
-                    rest.setId(cursor.getInt(0));
-                    rest.setStoreName(cursor.getString(1));
-                    rest.setAddress(cursor.getString(2));
-                    rest.setLatitude(cursor.getDouble(3));
-                    rest.setLongitude(cursor.getDouble(4));
+                    rest.setId(mCursor.getInt(0));
+                    rest.setStoreName(mCursor.getString(1));
+                    rest.setAddress(mCursor.getString(2));
+                    rest.setLatitude(mCursor.getDouble(3));
+                    rest.setLongitude(mCursor.getDouble(4));
 
-                    rest.setTime(cursor.getString(5));
-                    rest.setH_day(cursor.getString(6));
-                    rest.setDate_fd(cursor.getString(7));
+                    rest.setTime(mCursor.getString(5));
+                    rest.setH_day(mCursor.getString(6));
+                    rest.setDate_fd(mCursor.getString(7));
 
 
                     // List에 해당 Row 추가
