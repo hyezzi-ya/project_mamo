@@ -1,15 +1,15 @@
-///////// 수
+///////// 정보창 생성 (mini) 빌드성공
 
 package com.example.test;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,16 +17,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
-import com.naver.maps.map.overlay.OverlayImage;
-import com.naver.maps.map.style.light.Position;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.LocationButtonView;
 
@@ -42,11 +40,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
-    private FusedLocationSource mLocationSource;
+    private FusedLocationSource locationSource;
     private NaverMap naverMap;
-
-    // 마커를 찍을 데이터
-    //private ArrayList<PlaceInfo> mPlaceInfoList;
+    private InfoWindow infoWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,36 +62,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // onMapReady에서 NaverMap 객체를 받음
         mapFragment.getMapAsync(this);
 
-        // 위치를 반환하는 구현체인 FusedLocationSource 생성
-        mLocationSource =
+        // 위치를 반환하는 구현체, FusedLocationSource 생성
+        locationSource =
                 new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
-
-
     }
-
-
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         Log.d( TAG, "onMapReady");
-
         this.naverMap = naverMap;
+
         // 권한확인. 결과는 onRequestPermissionsResult 콜백 매서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
-
-        // Load Database (Rest)
+        // 데이터베이스
         List<Rest> restList = initLoadRestDatabase();
-        // Add Rest Marker
+        // 마커,정보창 구현
         addRestMarker(restList);
-
+        addInfoWindow(restList);
 
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         this.naverMap = naverMap;
-        this.naverMap.setLocationSource(mLocationSource);
-
-
+        this.naverMap.setLocationSource(locationSource);
 
         // UI 컨트롤 재배치
         UiSettings uiSettings = this.naverMap.getUiSettings();
@@ -105,6 +94,89 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationButtonView.setMap(this.naverMap);
 
 
+    }
+
+    public void addInfoWindow(@NonNull List<Rest> restList) {
+
+        // infowindow
+        infoWindow = new InfoWindow();
+
+        for (int i = 0; i < restList.size(); i++) {
+
+            String storeName = restList.get(i).storeName;     // 이름
+            String address = restList.get(i).address;         // 주소
+            String time = restList.get(i).time;               // 시간
+
+            infoWindow.setAdapter(new InfoWindow.DefaultViewAdapter(this) {
+                @NonNull
+                @Override
+                protected View getContentView(@NonNull InfoWindow infoWindow) {
+                    View view = View.inflate(MainActivity.this, R.layout.view_info_window, null);
+                    ((TextView) view.findViewById(R.id.name)).setText(storeName);
+                    ((TextView) view.findViewById(R.id.address)).setText(address);
+                    ((TextView) view.findViewById(R.id.time)).setText(time);
+
+                    return view;
+                }
+            });
+
+
+            }
+    }
+
+    @Override
+    public boolean onClick(@NonNull Overlay overlay) {
+//        if (overlay instanceof Marker) {
+//            Toast.makeText(this.getApplicationContext(), "마커가 선택되었습니다", Toast.LENGTH_LONG).show();
+//            return true;
+//            Marker marker = (Marker) overlay;
+//            if (marker.getInfoWindow() == null) {
+//                // 현재 마커에 정보 창이 열려있지 않을 경우 엶
+//                infoWindow.open(marker);
+//            } else {
+//                // 이미 현재 마커에 정보 창이 열려있을 경우 닫음
+//                infoWindow.close();
+//            }
+//            return true;
+//        }
+            Marker marker = (Marker) overlay;
+            infoWindow.open(marker);
+
+        return false;
+    }
+
+    public void addRestMarker(@NonNull List<Rest> restList) {
+
+        for (int i = 0; i < restList.size(); i++) {
+
+            String storeName = restList.get(i).storeName;     // 이름
+            String address = restList.get(i).address;         // 주소
+            double lat = restList.get(i).latitude;            // 위도
+            double lon = restList.get(i).longitude;           // 경도
+
+            Marker marker = new Marker();
+            // 두개 동시에 해야 레드색
+            //marker.setIcon(MarkerIcons.BLACK);
+            marker.setIconTintColor(Color.RED);
+            marker.setPosition(new LatLng(lat, lon));
+            marker.setAnchor(new PointF(0.5f, 1.0f));
+            marker.setCaptionText(storeName);
+            marker.setMap(naverMap);
+            marker.setOnClickListener(this);
+
+            //markerList.add(marker);
+
+        }
+    }
+    public List<Rest> initLoadRestDatabase(){
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        databaseHelper.OpenDatabaseFile();
+
+        List<Rest> restList = databaseHelper.getTableData();
+        Log.e("test", String.valueOf(restList.size()));
+
+        databaseHelper.close();
+        return restList;
     }
 
     @Override
@@ -120,61 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if (overlay instanceof Marker) {
-            Toast.makeText(this.getApplicationContext(), "마커가 선택되었습니다", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return false;
-    }
-
-
-    public void addRestMarker(@NonNull List<Rest> restList) {
-
-
-        for (int i = 0; i < restList.size(); i++) {
-
-            String storeName = restList.get(i).storeName;     // 이름
-            String address = restList.get(i).address;         // 주소
-            double lat = restList.get(i).latitude;            // 위도
-            double lon = restList.get(i).longitude;           // 경도
-
-
-            Marker marker = new Marker();
-            marker.setIcon(OverlayImage.fromResource(R.drawable.markerline_yellow));
-            marker.setPosition(new LatLng(lat, lon));
-            marker.setAnchor(new PointF(0.5f, 1.0f));
-            marker.setCaptionText(storeName);
-            marker.setMap(naverMap);
-
-
-            //marker.setOnClickListener(this);
-            //markerList.add(marker);
-
-
-        }
-    }
-
-
-
-
-
-    public List<Rest> initLoadRestDatabase(){
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-        databaseHelper.OpenDatabaseFile();
-
-        List<Rest> restList = databaseHelper.getTableData();
-        Log.e("test", String.valueOf(restList.size()));
-
-        databaseHelper.close();
-        return restList;
-    }
-
-
-
-
-
 
 }
+
 
