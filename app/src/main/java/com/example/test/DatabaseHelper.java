@@ -131,7 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     rest.setTime(mCursor.getString(5));
                     rest.setH_day(mCursor.getString(6));
-                    rest.setDate_fd(mCursor.getString(7));
+                    rest.set_code(mCursor.getInt(7));
 
 
                     // List에 해당 Row 추가

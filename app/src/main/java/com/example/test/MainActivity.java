@@ -131,17 +131,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String address = restList.get(i).address;         // 주소
             double lat = restList.get(i).latitude;            // 위도
             double lon = restList.get(i).longitude;           // 경도
+            int _code = restList.get(i)._code;
 
             Marker marker = new Marker();
             marker.setTag(restList.get(i));
-            marker.setIconTintColor(Color.RED);
+
             marker.setPosition(new LatLng(lat, lon));
             marker.setAnchor(new PointF(0.5f, 1.0f));
             marker.setCaptionText(storeName);
             marker.setMap(naverMap);
             marker.setOnClickListener(this);
+            marker.getTag();
+            if( _code >=  2017){
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_yellow));
+            } else {
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_blue));
+            }
+
 
         }
+
 
         infoWindow = new InfoWindow();
         infoWindow.setAdapter(new InfoWindow.DefaultViewAdapter(this) {

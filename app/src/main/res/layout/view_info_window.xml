@@ -11,7 +11,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:textStyle="bold"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textColor="#232323"
         android:ellipsize="end"/>
 
@@ -22,7 +22,7 @@
         android:layout_marginTop="2dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:textColor="#5A5A5A"
         android:maxLines="3"/>
     <TextView
@@ -32,7 +32,7 @@
         android:layout_marginTop="2dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:textColor="#5A5A5A"
         android:maxLines="3"/>
 
