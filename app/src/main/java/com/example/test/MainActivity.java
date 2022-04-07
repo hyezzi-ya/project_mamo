@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -25,6 +26,7 @@ import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
+import com.naver.maps.map.style.light.Position;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.LocationButtonView;
 
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             fm.beginTransaction().add(R.id.map, mapFragment).commit();
+
         }
 
         // getMapAsync를 호출하여 비동기로 onMapReady 콜백 메서드 호출
@@ -66,15 +69,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 위치를 반환하는 구현체인 FusedLocationSource 생성
         mLocationSource =
                 new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
-        // Load Database (Rest)
-        List<Rest> restList = initLoadRestDatabase();
-
-        // Add Rest Marker
-        addRestMarker(restList);
 
 
 
     }
+
+
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -85,21 +85,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
 
+        // Load Database (Rest)
+        List<Rest> restList = initLoadRestDatabase();
+        // Add Rest Marker
+        addRestMarker(restList);
 
-
-
-
-
-//        // 지도상에 마커 표시
-//        Marker marker = new Marker();
-//        marker.setPosition(new LatLng(37.4908, 126.919));
-//        marker.setMap(naverMap);
-//
-//        marker.setWidth(100);
-//        marker.setHeight(100);
-        // 마커 아이콘변경
-//        marker.setIcon(OverlayImage.fromResource(R.drawable.tour));
-//        marker.setOnClickListener(this);
 
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         this.naverMap = naverMap;
@@ -142,29 +132,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void addRestMarker(@NonNull List<Rest> restList) {
 
-        // Marker img -> bitmap
-        //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.markerline_yellow);
 
         for (int i = 0; i < restList.size(); i++) {
 
             String storeName = restList.get(i).storeName;     // 이름
-            // 주소
+            String address = restList.get(i).address;         // 주소
             double lat = restList.get(i).latitude;            // 위도
             double lon = restList.get(i).longitude;           // 경도
 
 
             Marker marker = new Marker();
+            marker.setIcon(OverlayImage.fromResource(R.drawable.markerline_yellow));
             marker.setPosition(new LatLng(lat, lon));
-            marker.setMap(naverMap);
-//            marker.setCaptionText(storeName);
             marker.setAnchor(new PointF(0.5f, 1.0f));
-            marker.setOnClickListener(this);
-            //markerList.add(marker);
+            marker.setCaptionText(storeName);
+            marker.setMap(naverMap);
 
+
+            //marker.setOnClickListener(this);
+            //markerList.add(marker);
 
 
         }
     }
+
+
+
+
+
     public List<Rest> initLoadRestDatabase(){
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         databaseHelper.OpenDatabaseFile();
