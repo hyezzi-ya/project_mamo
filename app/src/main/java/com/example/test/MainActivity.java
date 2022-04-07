@@ -1,4 +1,4 @@
-///////// 정보창 생성 (mini) 빌드성공
+///////// 정보창 생성 (함수구현) 빌드성공
 
 package com.example.test;
 
@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationSource mLocationSource;
     private NaverMap naverMap;
+    private InfoWindow infoWindow;
+
 
     // 마커를 찍을 데이터
     //private ArrayList<PlaceInfo> mPlaceInfoList;
@@ -94,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         addRestMarker(restList);
 
 
+
+
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         this.naverMap = naverMap;
         this.naverMap.setLocationSource(mLocationSource);
@@ -110,6 +116,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+
+
+    @Override
+    public boolean onClick(@NonNull Overlay overlay) {
+
+        Marker marker = (Marker) overlay;
+        infoWindow.open(marker);
+
+        return false;
+    }
+
+    public void addRestMarker(@NonNull List<Rest> restList) {
+
+        for (int i = 0; i < restList.size(); i++) {
+
+            String storeName = restList.get(i).storeName;     // 이름
+            String address = restList.get(i).address;         // 주소
+            double lat = restList.get(i).latitude;            // 위도
+            double lon = restList.get(i).longitude;           // 경도
+
+            Marker marker = new Marker();
+            marker.setTag(restList.get(i));
+            marker.setIconTintColor(Color.RED);
+            marker.setPosition(new LatLng(lat, lon));
+            marker.setAnchor(new PointF(0.5f, 1.0f));
+            marker.setCaptionText(storeName);
+            marker.setMap(naverMap);
+            marker.setOnClickListener(this);
+
+        }
+
+        infoWindow = new InfoWindow();
+        infoWindow.setAdapter(new InfoWindow.DefaultViewAdapter(this) {
+            @NonNull
+            @Override
+            protected View getContentView(@NonNull InfoWindow infoWindow) {
+                Marker marker = infoWindow.getMarker();
+                Rest restList = (Rest) marker.getTag();
+                View view = View.inflate(MainActivity.this, R.layout.view_info_window, null);
+                ((TextView) view.findViewById(R.id.name)).setText(restList.storeName);
+                return view;
+            }
+        });
+
+    }
+    public List<Rest> initLoadRestDatabase(){
+        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
+        databaseHelper.OpenDatabaseFile();
+
+        List<Rest> restList = databaseHelper.getTableData();
+        Log.e("test", String.valueOf(restList.size()));
+
+        databaseHelper.close();
+        return restList;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -123,70 +186,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public boolean onClick(@NonNull Overlay overlay) {
-        if (overlay instanceof Marker) {
-            Toast.makeText(this.getApplicationContext(), "마커가 선택되었습니다", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return false;
-    }
-
-
-    public void addRestMarker(@NonNull List<Rest> restList) {
-
-
-        for (int i = 0; i < restList.size(); i++) {
-
-            String storeName = restList.get(i).storeName;     // 이름
-            String address = restList.get(i).address;         // 주소
-            double lat = restList.get(i).latitude;            // 위도
-            double lon = restList.get(i).longitude;           // 경도
-
-
-            Marker marker = new Marker();
-            // 두개 동시에 해야 레드색
-            //marker.setIcon(MarkerIcons.BLACK);
-            marker.setIconTintColor(Color.RED);
-            marker.setPosition(new LatLng(lat, lon));
-            marker.setAnchor(new PointF(0.5f, 1.0f));
-            marker.setCaptionText(storeName);
-            marker.setMap(naverMap);
-            marker.setOnClickListener(this);
-
-
-            InfoWindow infoWindow = new InfoWindow();
-
-            // context ->  this
-            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(this) {
-                @NonNull
-                @Override
-                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                    return storeName;
-                }
-            });
-            infoWindow.open(marker);
-
-
-            //markerList.add(marker);
-
-
-        }
-    }
-
-
-    public List<Rest> initLoadRestDatabase(){
-        DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
-        databaseHelper.OpenDatabaseFile();
-
-        List<Rest> restList = databaseHelper.getTableData();
-        Log.e("test", String.valueOf(restList.size()));
-
-        databaseHelper.close();
-        return restList;
-    }
-
 
 }
+
+
 
 
