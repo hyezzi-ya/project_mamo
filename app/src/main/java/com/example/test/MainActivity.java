@@ -1,4 +1,4 @@
-///////// 정보창 생성 (함수구현) 빌드성공
+///////// infowWindow viewAdapter구현성공 +  지도 선택시 버튼 사라짐 + 버튼 다시클릭시 버튼 사라짐
 
 package com.example.test;
 
@@ -37,7 +37,7 @@ import com.naver.maps.map.widget.LocationButtonView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,Overlay.OnClickListener  {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,Overlay.OnClickListener, NaverMap.OnMapClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NaverMap naverMap;
     private InfoWindow infoWindow;
 
-
     // 마커를 찍을 데이터
     //private ArrayList<PlaceInfo> mPlaceInfoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -77,11 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationSource =
                 new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
-
-
     }
-
-
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -91,20 +87,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 권한확인. 결과는 onRequestPermissionsResult 콜백 매서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
+        naverMap.setOnMapClickListener(this);
 
         // Load Database (Rest)
         List<Rest> restList = initLoadRestDatabase();
         // Add Rest Marker
         addRestMarker(restList);
 
-
-
-
         // NaverMap 객체 받아서 NaverMap 객체에 위치 소스 지정
         this.naverMap = naverMap;
         this.naverMap.setLocationSource(mLocationSource);
-
-
 
         // UI 컨트롤 재배치
         UiSettings uiSettings = this.naverMap.getUiSettings();
@@ -113,22 +105,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LocationButtonView locationButtonView = findViewById(R.id.location);
         locationButtonView.setMap(this.naverMap);
 
-
     }
-
-
-
 
     @Override
     public boolean onClick(@NonNull Overlay overlay) {
 
-        Marker marker = (Marker) overlay;
-        infoWindow.open(marker);
-
+        if (overlay instanceof Marker) {
+            Marker marker = (Marker) overlay;
+            if (marker.getInfoWindow() != null) {
+                infoWindow.close();
+            } else {
+                infoWindow.open(marker);
+            }
+            return true;
+        }
         return false;
     }
 
     public void addRestMarker(@NonNull List<Rest> restList) {
+
 
         for (int i = 0; i < restList.size(); i++) {
 
@@ -165,6 +160,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+
+    // 지도 클릭시
+    @Override
+    public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+        if (infoWindow.getMarker() != null) {
+            infoWindow.close();
+        }
+    }
+
     public List<Rest> initLoadRestDatabase(){
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
         databaseHelper.OpenDatabaseFile();
