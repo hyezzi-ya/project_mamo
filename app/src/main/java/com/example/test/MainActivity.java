@@ -156,7 +156,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Marker marker = infoWindow.getMarker();
                 Rest restList = (Rest) marker.getTag();
                 View view = View.inflate(MainActivity.this, R.layout.view_info_window, null);
-                ((TextView) view.findViewById(R.id.name)).setText(restList.storeName);
+                ((TextView) view.findViewById(R.id.storeName)).setText(restList.storeName);
+                ((TextView) view.findViewById(R.id.address)).setText(restList.address);
+                ((TextView) view.findViewById(R.id.time)).setText(restList.time);
+
                 return view;
             }
         });
