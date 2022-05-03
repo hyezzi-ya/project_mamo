@@ -11,7 +11,7 @@ public class Rest {
     public double latitude;
     public String time;
     public String h_day;
-    public int _code;
+    public String  _code;
 
 
 
@@ -23,7 +23,7 @@ public class Rest {
     public void setLatitude(double latitude){this.latitude = latitude;}
     public void setTime(String time){ this.time = time; }
     public void setH_day(String h_day){ this.h_day = h_day; }
-    public void set_code(int _code){ this._code = _code; }
+    public void set_code(String _code){ this._code = _code; }
 
     // get function
     public int getId(){ return this._id; }
@@ -33,7 +33,7 @@ public class Rest {
     public double getLongitude(){return this.longitude;}
     public String getTime(){ return this.time; }
     public String getH_day(){ return this.h_day; }
-    public int get_code(){ return this._code; }
+    public String get_code(){ return this._code; }
 
 
 }

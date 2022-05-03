@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(@NonNull NaverMap naverMap) {
         Log.d( TAG, "onMapReady");
 
-        this.naverMap = naverMap;
+       // this.naverMap = naverMap;
         // 권한확인. 결과는 onRequestPermissionsResult 콜백 매서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
@@ -101,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // UI 컨트롤 재배치
         UiSettings uiSettings = this.naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(false); // 기본값 : false
+
+
+
 
         LocationButtonView locationButtonView = findViewById(R.id.location);
         locationButtonView.setMap(this.naverMap);
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String address = restList.get(i).address;         // 주소
             double lat = restList.get(i).latitude;            // 위도
             double lon = restList.get(i).longitude;           // 경도
-            int _code = restList.get(i)._code;
+            String _code = restList.get(i)._code;
 
             Marker marker = new Marker();
             marker.setTag(restList.get(i));
@@ -142,9 +145,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             marker.setMap(naverMap);
             marker.setOnClickListener(this);
             marker.getTag();
-            if( _code >=  2017){
+            if( _code.equals("식음료")){
                 marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_yellow));
-            } else {
+            } else if( _code.equals("숙박지")){
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_orange));
+            }
+            else if( _code.equals("관광")){
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_pink));
+           } else if (_code.equals("동물병원")){
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_green));
+            }
+            else {
                 marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_blue));
             }
 
@@ -162,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 View view = View.inflate(MainActivity.this, R.layout.view_info_window, null);
                 ((TextView) view.findViewById(R.id.storeName)).setText(restList.storeName);
                 ((TextView) view.findViewById(R.id.address)).setText(restList.address);
-                ((TextView) view.findViewById(R.id.time)).setText(restList.time);
+               // ((TextView) view.findViewById(R.id.time)).setText(restList.time);
 
                 return view;
             }

@@ -21,9 +21,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Error TAG
     protected static String TAG = "DatabaseHelper";
 
-    private static String databasePath = "app/src/main/assets/"; // 데이터베이스 경로
-    private static String databaseName = "rest.db"; // 데이터베이스 이름
-    private static String tableName = "rest"; // 테이블 이름
+    private static String databasePath = "/app/src/main/assets"; // 데이터베이스 경로
+    private static String databaseName = "WITHDOG.db"; // 데이터베이스 이름
+    private static String tableName = "WITHDOG"; // 테이블 이름
 
     private final Context mContext;
     private SQLiteDatabase mDatabase;
@@ -128,10 +128,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     rest.setAddress(mCursor.getString(2));
                     rest.setLatitude(mCursor.getDouble(3));
                     rest.setLongitude(mCursor.getDouble(4));
+                    rest.set_code(mCursor.getString(5));
 
-                    rest.setTime(mCursor.getString(5));
-                    rest.setH_day(mCursor.getString(6));
-                    rest.set_code(mCursor.getInt(7));
+                    //rest.setTime(mCursor.getString(7));
+                   // rest.setH_day(mCursor.getString(6));
+
 
 
                     // List에 해당 Row 추가
