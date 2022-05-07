@@ -21,12 +21,12 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.LocationButtonView;
+import com.naver.maps.map.widget.ZoomControlView;
 
 import java.util.List;
 
@@ -42,9 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FusedLocationSource mLocationSource;
     private NaverMap naverMap;
-    private InfoWindow infoWindow;
-    private String str1;
-    private String str2;
+
 
     // 마커를 찍을 데이터
     //private ArrayList<PlaceInfo> mPlaceInfoList;
@@ -97,8 +95,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // UI 컨트롤 재배치
         UiSettings uiSettings = this.naverMap.getUiSettings();
+        uiSettings.setScaleBarEnabled(false); // 기본값 : true / 축척
+        //uiSettings.setZoomControlEnabled(false); // 기본값 : true
         uiSettings.setLocationButtonEnabled(false); // 기본값 : false
 
+
+//        ZoomControlView zoomControlView = findViewById(R.id.zoom);
+//        zoomControlView.setMap(this.naverMap);
         LocationButtonView locationButtonView = findViewById(R.id.location);
         locationButtonView.setMap(this.naverMap);
 
@@ -112,10 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (marker != null) {
                 Rest item = (Rest) marker.getTag();
                 Log.e(TAG, "item ==> " + item.getStoreName());
-                //infoWindow.close();
-//                Intent intent = new Intent(MainActivity.this,InfoActivity.class);
-//                intent.putExtra("storeName");
-//                startActivity(intent);
                 View bottomSheetView = getLayoutInflater().inflate(R.layout.view_info_window, null);
                 BottomSheetDialog dialog = new BottomSheetDialog(this);
 
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dialog.show();
 
             } else {
-                //infoWindow.open(marker);
+
             }
             return true;
         }
@@ -189,17 +188,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-//
+
 
     }
 
-    // 지도 클릭시
-    @Override
-    public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-        if (infoWindow.getMarker() != null) {
-            infoWindow.close();
-        }
-    }
 
     public List<Rest> initLoadRestDatabase(){
         DatabaseHelper databaseHelper = new DatabaseHelper(getApplicationContext());
@@ -223,6 +215,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
             }
         }
+    }
+
+    @Override
+    public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+
     }
 }
 
