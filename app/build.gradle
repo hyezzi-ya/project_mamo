@@ -42,5 +42,8 @@ dependencies {
     // db받기
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    // 클러스터링ㅋ
+//    implementation 'io.github.ParkSangGwon:tedclustering-naver:x.y.z'
+//    implementation 'io.github.ParkSangGwon:tedclustering-naver:1.0.2'
 
 }

@@ -131,7 +131,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     rest.set_code(mCursor.getString(5));
 
                     //rest.setTime(mCursor.getString(7));
-                   // rest.setH_day(mCursor.getString(6));
+                    // rest.setH_day(mCursor.getString(6));
 
 
 

@@ -1,26 +1,21 @@
-///////// infowWindow viewAdapter구현성공 +  지도 선택시 버튼 사라짐 + 버튼 다시클릭시 버튼 사라짐
 
 package com.example.test;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -30,9 +25,7 @@ import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
-import com.naver.maps.map.style.light.Position;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.naver.maps.map.util.MarkerIcons;
 import com.naver.maps.map.widget.LocationButtonView;
 
 import java.util.List;
@@ -50,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationSource mLocationSource;
     private NaverMap naverMap;
     private InfoWindow infoWindow;
+    private String str1;
+    private String str2;
 
     // 마커를 찍을 데이터
     //private ArrayList<PlaceInfo> mPlaceInfoList;
@@ -77,13 +72,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationSource =
                 new FusedLocationSource(this, PERMISSION_REQUEST_CODE);
 
+
+
     }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         Log.d( TAG, "onMapReady");
 
-       // this.naverMap = naverMap;
+        this.naverMap = naverMap;
         // 권한확인. 결과는 onRequestPermissionsResult 콜백 매서드 호출
         ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_REQUEST_CODE);
 
@@ -102,9 +99,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         UiSettings uiSettings = this.naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(false); // 기본값 : false
 
-
-
-
         LocationButtonView locationButtonView = findViewById(R.id.location);
         locationButtonView.setMap(this.naverMap);
 
@@ -115,10 +109,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (overlay instanceof Marker) {
             Marker marker = (Marker) overlay;
-            if (marker.getInfoWindow() != null) {
-                infoWindow.close();
+            if (marker != null) {
+                Rest item = (Rest) marker.getTag();
+                Log.e(TAG, "item ==> " + item.getStoreName());
+                //infoWindow.close();
+//                Intent intent = new Intent(MainActivity.this,InfoActivity.class);
+//                intent.putExtra("storeName");
+//                startActivity(intent);
+                View bottomSheetView = getLayoutInflater().inflate(R.layout.view_info_window, null);
+                BottomSheetDialog dialog = new BottomSheetDialog(this);
+
+                TextView storeName = bottomSheetView.findViewById(R.id.storeName);
+                TextView address = bottomSheetView.findViewById(R.id.address);
+                TextView time = bottomSheetView.findViewById(R.id.time);
+                TextView code = bottomSheetView.findViewById(R.id.code);
+                TextView hDay = bottomSheetView.findViewById(R.id.h_day);
+
+                storeName.setText(item.getStoreName());
+                address.setText(item.getAddress());
+                time.setText(item.getTime());
+                code.setText(item.get_code());
+                hDay.setText(item.getH_day());
+
+                dialog.setContentView(bottomSheetView);
+                dialog.show();
+
             } else {
-                infoWindow.open(marker);
+                //infoWindow.open(marker);
             }
             return true;
         }
@@ -134,9 +151,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String address = restList.get(i).address;         // 주소
             double lat = restList.get(i).latitude;            // 위도
             double lon = restList.get(i).longitude;           // 경도
-            String _code = restList.get(i)._code;
+            String _code = restList.get(i)._code;             // 구
+
+
 
             Marker marker = new Marker();
+
             marker.setTag(restList.get(i));
 
             marker.setPosition(new LatLng(lat, lon));
@@ -144,40 +164,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             marker.setCaptionText(storeName);
             marker.setMap(naverMap);
             marker.setOnClickListener(this);
+            marker.setWidth(100);
+            marker.setHeight(100);
+            marker.setCaptionMinZoom(15);
+            marker.setCaptionMaxZoom(16);
+            marker.setHideCollidedSymbols(true);
+            marker.setHideCollidedMarkers(true);
+
+
             marker.getTag();
             if( _code.equals("식음료")){
-                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_yellow));
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_coffee));
             } else if( _code.equals("숙박지")){
-                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_orange));
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_hotel));
             }
             else if( _code.equals("관광")){
-                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_pink));
-           } else if (_code.equals("동물병원")){
-                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_green));
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_dog));
+            } else if (_code.equals("동물병원")){
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_hospital));
             }
             else {
-                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_baseline_place_blue));
+                marker.setIcon(OverlayImage.fromResource(R.drawable.ic_place_dog));
             }
-
-
         }
 
 
-        infoWindow = new InfoWindow();
-        infoWindow.setAdapter(new InfoWindow.DefaultViewAdapter(this) {
-            @NonNull
-            @Override
-            protected View getContentView(@NonNull InfoWindow infoWindow) {
-                Marker marker = infoWindow.getMarker();
-                Rest restList = (Rest) marker.getTag();
-                View view = View.inflate(MainActivity.this, R.layout.view_info_window, null);
-                ((TextView) view.findViewById(R.id.storeName)).setText(restList.storeName);
-                ((TextView) view.findViewById(R.id.address)).setText(restList.address);
-               // ((TextView) view.findViewById(R.id.time)).setText(restList.time);
-
-                return view;
-            }
-        });
+//
 
     }
 
@@ -212,10 +224,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-
-
 }
-
-
-
 
