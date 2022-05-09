@@ -32,6 +32,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,Overlay.OnClickListener, NaverMap.OnMapClickListener {
 
+
+
     private static final String TAG = "MainActivity";
 
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        setTheme(R.style.Myapplication);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

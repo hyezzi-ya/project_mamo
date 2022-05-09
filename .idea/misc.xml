@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_place_pink.xml" value="0.21481481481481482" />
         <entry key="app/src/main/res/drawable/ic_baseline_place_yellow.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2657407407407407" />
+        <entry key="app/src/main/res/drawable/splash.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_info.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/view_info_window.xml" value="0.1" />
