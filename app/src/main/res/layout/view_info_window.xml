@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="15dp"
-    android:paddingBottom="10dp"
+
+    android:paddingBottom="3dp"
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:behavior_draggable="true"
@@ -15,68 +15,103 @@
         android:id="@+id/iv_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/bottomsheet_radius_top" />
+        android:padding="5dp"
+        android:src="@drawable/bottomsheet_radius_top"
+        android:background="#f9e000"/>
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/storeName"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="13dp"
+        android:baselineAligned="true"
+        android:background="#f9e000">
+
+        <TextView
+            android:id="@+id/storeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:ellipsize="end"
+            android:textColor="#232323"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:textColor="#5A5A5A"
+            android:maxLines="3" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="#232323"
-        android:ellipsize="end"/>
+        android:orientation="horizontal"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="8dp">
 
-    <TextView
-        android:id="@+id/code"
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_bottom_location"
+            android:gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            android:textColor="#232323"
+            android:maxLines="3"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textSize="12sp"
-        android:textColor="#5A5A5A"
-        android:maxLines="3"/>
-
-
-    <TextView
-        android:id="@+id/address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textSize="12sp"
-        android:textColor="#5A5A5A"
-        android:maxLines="3"/>
-
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="2dp"
         android:layout_marginTop="2dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textSize="12sp"
-        android:textColor="#5A5A5A"
-        android:maxLines="3"/>
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/h_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:textSize="12sp"
-        android:textColor="#5A5A5A"
-        android:maxLines="3"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_bottom_tel"
+            android:gravity="center_horizontal"
+            />
+
+        <TextView
+            android:id="@+id/tel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="13sp"
+            android:textColor="#232323"
+            android:maxLines="3"/>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
 
 </LinearLayout>

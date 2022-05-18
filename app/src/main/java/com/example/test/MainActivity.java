@@ -124,13 +124,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 TextView address = bottomSheetView.findViewById(R.id.address);
                 TextView time = bottomSheetView.findViewById(R.id.time);
                 TextView code = bottomSheetView.findViewById(R.id.code);
-                TextView hDay = bottomSheetView.findViewById(R.id.h_day);
+                //TextView hDay = bottomSheetView.findViewById(R.id.h_day);
+                TextView tel = bottomSheetView.findViewById(R.id.tel);
 
                 storeName.setText(item.getStoreName());
                 address.setText(item.getAddress());
-                time.setText(item.getTime());
+                //time.setText(item.getTime());
                 code.setText(item.get_code());
-                hDay.setText(item.getH_day());
+                //tel.setText(item.getTel());
+                //hDay.setText(item.getH_day());
 
                 dialog.setContentView(bottomSheetView);
                 dialog.show();
